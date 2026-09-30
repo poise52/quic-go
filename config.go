@@ -126,6 +126,7 @@ func populateConfig(config *Config) *Config {
 
 	return &Config{
 		GetConfigForClient:               config.GetConfigForClient,
+		ConfigureCongestionControl:       config.ConfigureCongestionControl,
 		Versions:                         versions,
 		HandshakeIdleTimeout:             handshakeIdleTimeout,
 		MaxIdleTimeout:                   idleTimeout,

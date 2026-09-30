@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net"
 	"net/netip"
+	"reflect"
 	"strconv"
 	"testing"
 	"testing/synctest"
@@ -83,6 +84,42 @@ type testConnection struct {
 	destConnID protocol.ConnectionID
 	srcConnID  protocol.ConnectionID
 	remoteAddr *net.UDPAddr
+}
+
+type mtuResetRecorder struct {
+	start protocol.ByteCount
+	max   protocol.ByteCount
+}
+
+func (*mtuResetRecorder) Start(monotime.Time)                {}
+func (*mtuResetRecorder) ShouldSendProbe(monotime.Time) bool { return false }
+func (*mtuResetRecorder) CurrentSize() protocol.ByteCount    { return 0 }
+func (*mtuResetRecorder) GetPing(monotime.Time) (ackhandler.Frame, protocol.ByteCount) {
+	return ackhandler.Frame{}, 0
+}
+func (m *mtuResetRecorder) Reset(_ monotime.Time, start, max protocol.ByteCount) {
+	m.start = start
+	m.max = max
+}
+
+func TestPathMigrationResetsCachedPayloadEstimateAndSenderSize(t *testing.T) {
+	tc := newServerTestConnection(t, nil, &Config{InitialPacketSize: 1280, DisablePathMTUDiscovery: true}, false)
+	const oldPathMTU = 1430
+	tc.conn.sentPacketHandler.SetMaxDatagramSize(oldPathMTU)
+	tc.conn.maxPayloadSizeEstimate.Store(uint32(estimateMaxPayloadSize(oldPathMTU)))
+	tc.conn.peerParams = &wire.TransportParameters{}
+
+	recorder := &mtuResetRecorder{}
+	tc.conn.mtuDiscoverer = recorder
+	tc.conn.resetPathMTU(monotime.Now())
+
+	initial := protocol.ByteCount(tc.conn.config.InitialPacketSize)
+	require.Equal(t, uint32(estimateMaxPayloadSize(initial)), tc.conn.maxPayloadSizeEstimate.Load())
+	require.Equal(t, initial, recorder.start)
+	require.Equal(t, protocol.ByteCount(protocol.MaxPacketBufferSize), recorder.max)
+	require.Less(t, recorder.start, protocol.ByteCount(oldPathMTU))
+	senderSize := reflect.ValueOf(tc.conn.sentPacketHandler).Elem().FieldByName("maxDatagramSize").Int()
+	require.Equal(t, int64(initial), senderSize)
 }
 
 func (tc *testConnection) receivedPacketHandler() *ackhandler.ReceivedPacketHandler {

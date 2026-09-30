@@ -12,6 +12,21 @@
 
 quic-go is an implementation of the QUIC protocol ([RFC 9000](https://datatracker.ietf.org/doc/html/rfc9000), [RFC 9001](https://datatracker.ietf.org/doc/html/rfc9001), [RFC 9002](https://datatracker.ietf.org/doc/html/rfc9002)) in Go. It has support for HTTP/3 ([RFC 9114](https://datatracker.ietf.org/doc/html/rfc9114)), including QPACK ([RFC 9204](https://datatracker.ietf.org/doc/html/rfc9204)) and HTTP Datagrams ([RFC 9297](https://datatracker.ietf.org/doc/html/rfc9297)).
 
+## 3x-ui TUIC local changes
+
+This pinned copy carries a small local patch used by 3x-ui's in-process TUIC server:
+
+- QUIC connections can install a congestion-control factory before the handshake; the server uses it for Xray BBR.
+- The built-in CUBIC/New Reno sender can be selected per new connection.
+- Changing the path MTU resets both the active sender's datagram size and the cached maximum-payload estimate.
+
+Keep these changes covered when updating the pinned dependency. The root repository's `make test-go` and `make race` targets run this module's top-level and `internal/ackhandler` suites; CI runs the same packages. Run them from this directory when working on the fork:
+
+```sh
+go test -shuffle=on -count=1 . ./internal/ackhandler
+go test -race -shuffle=on -count=1 -timeout 25m . ./internal/ackhandler
+```
+
 In addition to these base RFCs, it also implements the following RFCs:
 
 * Unreliable Datagram Extension ([RFC 9221](https://datatracker.ietf.org/doc/html/rfc9221))

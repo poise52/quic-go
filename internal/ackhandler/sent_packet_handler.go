@@ -99,10 +99,11 @@ type sentPacketHandler struct {
 
 	bytesInFlight protocol.ByteCount
 
-	congestion      congestion.SendAlgorithmWithDebugInfos
-	congestionMutex sync.RWMutex
-	rttStats        *utils.RTTStats
-	connStats       *utils.ConnectionStats
+	congestion        congestion.SendAlgorithmWithDebugInfos
+	congestionMutex   sync.RWMutex
+	congestionFactory func(protocol.ByteCount) congestion.SendAlgorithmWithDebugInfos
+	rttStats          *utils.RTTStats
+	connStats         *utils.ConnectionStats
 
 	// The number of times a PTO has been sent without receiving an ack.
 	ptoCount uint32
@@ -1102,8 +1103,10 @@ func (h *sentPacketHandler) TimeUntilSend() monotime.Time {
 }
 
 func (h *sentPacketHandler) SetMaxDatagramSize(s protocol.ByteCount) {
+	h.congestionMutex.Lock()
+	defer h.congestionMutex.Unlock()
 	h.maxDatagramSize = s
-	h.getCongestionControl().SetMaxDatagramSize(s)
+	h.congestion.SetMaxDatagramSize(s)
 }
 
 func (h *sentPacketHandler) SetLastDatagramPadding(n protocol.ByteCount) {
@@ -1210,15 +1213,21 @@ func (h *sentPacketHandler) MigratedPath(now monotime.Time, initialMaxDatagramSi
 	for pn := range h.appDataPackets.history.PathProbes() {
 		h.appDataPackets.history.RemovePathProbe(pn)
 	}
-	h.congestion = congestion.NewCubicSender(
-		congestion.DefaultClock{},
-		h.rttStats,
-		h.connStats,
-		initialMaxDatagramSize,
-		true, // use Reno
-		h.qlogger,
-	)
+	h.congestionMutex.Lock()
+	h.maxDatagramSize = initialMaxDatagramSize
+	if h.congestionFactory != nil {
+		h.congestion = h.congestionFactory(initialMaxDatagramSize)
+	} else {
+		h.congestion = newCubicSender(h, initialMaxDatagramSize, true)
+	}
+	h.congestionMutex.Unlock()
 	h.setLossDetectionTimer(now)
+}
+
+func newCubicSender(h *sentPacketHandler, size protocol.ByteCount, reno bool) congestion.SendAlgorithmWithDebugInfos {
+	return congestion.NewCubicSender(
+		congestion.DefaultClock{}, h.rttStats, h.connStats, size, reno, h.qlogger,
+	)
 }
 
 func (h *sentPacketHandler) getCongestionControl() congestion.SendAlgorithmWithDebugInfos {
@@ -1230,11 +1239,38 @@ func (h *sentPacketHandler) getCongestionControl() congestion.SendAlgorithmWithD
 
 func (h *sentPacketHandler) SetCongestionControl(cc congestionExt.CongestionControl) {
 	h.congestionMutex.Lock()
+	h.congestionFactory = nil
 	cc.SetRTTStatsProvider(h.rttStats)
 	if ccEx, isEx := cc.(congestionExt.CongestionControlEx); isEx {
 		h.congestion = &ccAdapterEx{ccEx}
 	} else {
 		h.congestion = &ccAdapter{cc}
 	}
+	h.congestionMutex.Unlock()
+}
+
+func (h *sentPacketHandler) SetCubicCongestionControl(reno bool) {
+	h.congestionMutex.Lock()
+	h.congestionFactory = func(size protocol.ByteCount) congestion.SendAlgorithmWithDebugInfos {
+		return newCubicSender(h, size, reno)
+	}
+	h.congestion = h.congestionFactory(h.maxDatagramSize)
+	h.congestionMutex.Unlock()
+}
+
+func (h *sentPacketHandler) SetCongestionControlFactory(factory func(congestionExt.ByteCount) congestionExt.CongestionControl) {
+	if factory == nil {
+		return
+	}
+	h.congestionMutex.Lock()
+	h.congestionFactory = func(size protocol.ByteCount) congestion.SendAlgorithmWithDebugInfos {
+		cc := factory(congestionExt.ByteCount(size))
+		cc.SetRTTStatsProvider(h.rttStats)
+		if ccEx, ok := cc.(congestionExt.CongestionControlEx); ok {
+			return &ccAdapterEx{ccEx}
+		}
+		return &ccAdapter{cc}
+	}
+	h.congestion = h.congestionFactory(h.maxDatagramSize)
 	h.congestionMutex.Unlock()
 }

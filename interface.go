@@ -103,6 +103,9 @@ type Config struct {
 	// GetConfigForClient is called for incoming connections.
 	// If the error is not nil, the connection attempt is refused.
 	GetConfigForClient func(info *ClientInfo) (*Config, error)
+	// ConfigureCongestionControl runs for each new connection after its sender
+	// exists and before the first packet is processed.
+	ConfigureCongestionControl func(conn *Conn)
 	// The QUIC versions that can be negotiated.
 	// If not set, it uses all versions available.
 	Versions []Version

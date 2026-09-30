@@ -323,6 +323,9 @@ var newConnection = func(
 		s.qlogger,
 		s.logger,
 	)
+	if s.config.ConfigureCongestionControl != nil {
+		s.config.ConfigureCongestionControl(s)
+	}
 	s.maxPayloadSizeEstimate.Store(uint32(estimateMaxPayloadSize(protocol.ByteCount(s.config.InitialPacketSize))))
 	statelessResetToken := statelessResetter.GetStatelessResetToken(srcConnID)
 	params := &wire.TransportParameters{
@@ -456,6 +459,9 @@ var newClientConnection = func(
 		s.qlogger,
 		s.logger,
 	)
+	if s.config.ConfigureCongestionControl != nil {
+		s.config.ConfigureCongestionControl(s)
+	}
 	s.maxPayloadSizeEstimate.Store(uint32(estimateMaxPayloadSize(protocol.ByteCount(s.config.InitialPacketSize))))
 	oneRTTStream := newCryptoStream()
 	params := &wire.TransportParameters{
@@ -937,13 +943,7 @@ func (c *Conn) idleTimeoutStartTime() monotime.Time {
 }
 
 func (c *Conn) switchToNewPath(tr *Transport, now monotime.Time) {
-	initialPacketSize := protocol.ByteCount(c.config.InitialPacketSize)
-	c.sentPacketHandler.MigratedPath(now, initialPacketSize)
-	maxPacketSize := protocol.ByteCount(protocol.MaxPacketBufferSize)
-	if c.peerParams.MaxUDPPayloadSize > 0 && c.peerParams.MaxUDPPayloadSize < maxPacketSize {
-		maxPacketSize = c.peerParams.MaxUDPPayloadSize
-	}
-	c.mtuDiscoverer.Reset(now, initialPacketSize, maxPacketSize)
+	c.resetPathMTU(now)
 	c.conn = newSendConn(tr.conn, c.conn.RemoteAddr(), packetInfo{}, utils.DefaultLogger) // TODO: find a better way
 	c.sendQueue.Close()
 	c.sendQueue = newSendQueue(c.conn)
@@ -952,6 +952,17 @@ func (c *Conn) switchToNewPath(tr *Transport, now monotime.Time) {
 			c.destroyImpl(err)
 		}
 	}()
+}
+
+func (c *Conn) resetPathMTU(now monotime.Time) {
+	initialPacketSize := protocol.ByteCount(c.config.InitialPacketSize)
+	c.sentPacketHandler.MigratedPath(now, initialPacketSize)
+	c.maxPayloadSizeEstimate.Store(uint32(estimateMaxPayloadSize(initialPacketSize)))
+	maxPacketSize := protocol.ByteCount(protocol.MaxPacketBufferSize)
+	if c.peerParams.MaxUDPPayloadSize > 0 && c.peerParams.MaxUDPPayloadSize < maxPacketSize {
+		maxPacketSize = c.peerParams.MaxUDPPayloadSize
+	}
+	c.mtuDiscoverer.Reset(now, initialPacketSize, maxPacketSize)
 }
 
 func (c *Conn) handleHandshakeComplete(now monotime.Time) error {
@@ -1323,16 +1334,7 @@ func (c *Conn) handleShortHeaderPacket(
 		return true, nil
 	}
 	c.pathManager.SwitchToPath(p.remoteAddr)
-	c.sentPacketHandler.MigratedPath(p.rcvTime, protocol.ByteCount(c.config.InitialPacketSize))
-	maxPacketSize := protocol.ByteCount(protocol.MaxPacketBufferSize)
-	if c.peerParams.MaxUDPPayloadSize > 0 && c.peerParams.MaxUDPPayloadSize < maxPacketSize {
-		maxPacketSize = c.peerParams.MaxUDPPayloadSize
-	}
-	c.mtuDiscoverer.Reset(
-		p.rcvTime,
-		protocol.ByteCount(c.config.InitialPacketSize),
-		maxPacketSize,
-	)
+	c.resetPathMTU(p.rcvTime)
 	c.conn.ChangeRemoteAddr(p.remoteAddr, p.info)
 	return true, nil
 }
@@ -3188,6 +3190,29 @@ func estimateMaxPayloadSize(mtu protocol.ByteCount) protocol.ByteCount {
 // SetCongestionControl replace the current congestion control algorithm with a new one.
 func (c *Conn) SetCongestionControl(cc congestion.CongestionControl) {
 	c.sentPacketHandler.SetCongestionControl(cc)
+}
+
+// SetCubicCongestionControl selects the built-in CUBIC or New Reno sender.
+func (c *Conn) SetCubicCongestionControl(reno bool) bool {
+	setter, ok := c.sentPacketHandler.(interface{ SetCubicCongestionControl(bool) })
+	if !ok {
+		return false
+	}
+	setter.SetCubicCongestionControl(reno)
+	return true
+}
+
+// SetCongestionControlFactory installs a controller factory that is reapplied
+// with the current packet size whenever the connection migrates to a new path.
+func (c *Conn) SetCongestionControlFactory(factory func(congestion.ByteCount) congestion.CongestionControl) bool {
+	setter, ok := c.sentPacketHandler.(interface {
+		SetCongestionControlFactory(func(congestion.ByteCount) congestion.CongestionControl)
+	})
+	if !ok || factory == nil {
+		return false
+	}
+	setter.SetCongestionControlFactory(factory)
+	return true
 }
 
 // InitialPacketSize returns the datagram size the connection starts out with,

@@ -89,7 +89,7 @@ func configWithNonZeroNonFunctionFields(t *testing.T, chromeParrot bool) *Config
 		}
 
 		switch fn := typ.Field(i).Name; fn {
-		case "GetConfigForClient", "RequireAddressValidation", "GetLogWriter", "AllowConnectionWindowIncrease", "Tracer":
+		case "GetConfigForClient", "ConfigureCongestionControl", "RequireAddressValidation", "GetLogWriter", "AllowConnectionWindowIncrease", "Tracer":
 			// Can't compare functions.
 		case "Versions":
 			f.Set(reflect.ValueOf([]Version{1, 2, 3}))
