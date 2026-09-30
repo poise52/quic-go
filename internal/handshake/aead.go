@@ -4,7 +4,7 @@ import (
 	"crypto/cipher"
 	"encoding/binary"
 
-	"github.com/apernet/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/protocol"
 )
 
 func createAEAD(suite cipherSuite, trafficSecret []byte, v protocol.Version) cipher.AEAD {

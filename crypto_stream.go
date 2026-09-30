@@ -8,9 +8,9 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/qerr"
-	"github.com/apernet/quic-go/internal/wire"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/qerr"
+	"github.com/poise52/quic-go/internal/wire"
 )
 
 const disableClientHelloScramblingEnv = "QUIC_GO_DISABLE_CLIENTHELLO_SCRAMBLING"

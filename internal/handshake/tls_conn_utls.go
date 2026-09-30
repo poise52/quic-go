@@ -8,7 +8,7 @@ import (
 
 	utls "github.com/refraction-networking/utls"
 
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go/quicvarint"
 )
 
 // utlsQUICConn adapts uTLS's UQUICConn to the tlsQUICConn interface, translating

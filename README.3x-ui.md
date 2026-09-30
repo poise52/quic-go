@@ -20,3 +20,15 @@ variant after changing the pinned dependency. Root `make test-go`, `make race`,
 and CI include these packages. TUIC tests also inspect actual sender selection
 and exercise authenticated TCP, native UDP and stream UDP across live
 `Manager.Ensure` changes with old connections still active.
+
+
+## Isolated module identity
+
+This fork declares `module github.com/poise52/quic-go`. All internal Go imports
+and code-generation paths use that identity. Original Apernet remains a separate
+module for Xray and other dependencies; TUIC imports this fork directly.
+
+The 3x-ui BBR bridge converts congestion API types and monotonic timestamps
+between the two modules. It reuses Xray BBR without copying its implementation.
+Pin this fork by an immutable commit / Go pseudo-version in the consuming
+project. GitHub release artifacts are not required.

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/utils"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/utils"
 )
 
 // LogFrame logs a frame, either sent or received

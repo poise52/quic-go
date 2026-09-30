@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apernet/quic-go/qlogwriter"
+	"github.com/poise52/quic-go/qlogwriter"
 )
 
 // Event is a recorded event with the event time.

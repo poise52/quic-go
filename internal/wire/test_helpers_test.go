@@ -6,9 +6,9 @@ import (
 	"log"
 	"testing"
 
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/utils"
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/utils"
+	"github.com/poise52/quic-go/quicvarint"
 )
 
 func encodeVarInt(i uint64) []byte {

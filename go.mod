@@ -1,4 +1,4 @@
-module github.com/apernet/quic-go
+module github.com/poise52/quic-go
 
 go 1.25.0
 

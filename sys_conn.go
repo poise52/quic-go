@@ -6,9 +6,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/apernet/quic-go/internal/monotime"
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/utils"
+	"github.com/poise52/quic-go/internal/monotime"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/utils"
 )
 
 type connCapabilities struct {

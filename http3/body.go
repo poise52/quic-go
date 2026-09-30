@@ -6,7 +6,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/apernet/quic-go"
+	"github.com/poise52/quic-go"
 )
 
 // Settingser allows waiting for and retrieving the peer's HTTP/3 settings.

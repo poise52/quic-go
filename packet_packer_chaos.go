@@ -3,11 +3,11 @@ package quic
 import (
 	"fmt"
 
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go/quicvarint"
 
-	"github.com/apernet/quic-go/internal/ackhandler"
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/wire"
+	"github.com/poise52/quic-go/internal/ackhandler"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/wire"
 )
 
 // Bounds for the chaos protection applied to Initial packets.

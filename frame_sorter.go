@@ -3,9 +3,9 @@ package quic
 import (
 	"errors"
 
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/utils"
-	"github.com/apernet/quic-go/internal/utils/tree"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/utils"
+	"github.com/poise52/quic-go/internal/utils/tree"
 )
 
 // byteInterval is an interval from one ByteCount to the other

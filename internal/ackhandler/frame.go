@@ -1,7 +1,7 @@
 package ackhandler
 
 import (
-	"github.com/apernet/quic-go/internal/wire"
+	"github.com/poise52/quic-go/internal/wire"
 )
 
 // FrameHandler handles the acknowledgement and the loss of a frame.

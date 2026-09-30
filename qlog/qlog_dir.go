@@ -9,8 +9,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/apernet/quic-go/internal/utils"
-	"github.com/apernet/quic-go/qlogwriter"
+	"github.com/poise52/quic-go/internal/utils"
+	"github.com/poise52/quic-go/qlogwriter"
 )
 
 // EventSchema is the qlog event schema for QUIC

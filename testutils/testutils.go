@@ -6,9 +6,9 @@ package testutils
 import (
 	"fmt"
 
-	"github.com/apernet/quic-go/internal/handshake"
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/wire"
+	"github.com/poise52/quic-go/internal/handshake"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/wire"
 )
 
 // writePacket returns a new raw packet with the specified header and payload

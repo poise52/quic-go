@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/apernet/quic-go"
+	"github.com/poise52/quic-go"
 )
 
 // Error is returned from the round tripper (for HTTP clients)

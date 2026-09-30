@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apernet/quic-go/internal/ackhandler"
-	"github.com/apernet/quic-go/internal/monotime"
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/wire"
+	"github.com/poise52/quic-go/internal/ackhandler"
+	"github.com/poise52/quic-go/internal/monotime"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/wire"
 )
 
 // A SendStream is a unidirectional Send Stream.

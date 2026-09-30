@@ -15,10 +15,10 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/apernet/quic-go"
-	"github.com/apernet/quic-go/http3/qlog"
-	"github.com/apernet/quic-go/qlogwriter"
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go"
+	"github.com/poise52/quic-go/http3/qlog"
+	"github.com/poise52/quic-go/qlogwriter"
+	"github.com/poise52/quic-go/quicvarint"
 )
 
 // NextProtoH3 is the ALPN protocol negotiated during the TLS handshake, for QUIC v1 and v2.

@@ -11,7 +11,7 @@
 set -eu
 
 upstream="github.com/quic-go/quic-go"
-fork="github.com/apernet/quic-go"
+fork="github.com/poise52/quic-go"
 
 from="$upstream"
 to="$fork"

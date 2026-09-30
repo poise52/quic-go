@@ -7,10 +7,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/apernet/quic-go"
-	"github.com/apernet/quic-go/http3/qlog"
-	"github.com/apernet/quic-go/qlogwriter"
-	"github.com/apernet/quic-go/testutils/events"
+	"github.com/poise52/quic-go"
+	"github.com/poise52/quic-go/http3/qlog"
+	"github.com/poise52/quic-go/qlogwriter"
+	"github.com/poise52/quic-go/testutils/events"
 
 	"github.com/stretchr/testify/require"
 )

@@ -5,8 +5,8 @@ import (
 	"encoding/binary"
 	"time"
 
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/quicvarint"
 )
 
 // Transport parameters sent by the parroted client that aren't part of any RFC.

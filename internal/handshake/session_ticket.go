@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/apernet/quic-go/internal/wire"
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go/internal/wire"
+	"github.com/poise52/quic-go/quicvarint"
 )
 
 const sessionTicketRevision = 5

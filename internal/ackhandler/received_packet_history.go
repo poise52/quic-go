@@ -4,7 +4,7 @@ import (
 	"iter"
 	"slices"
 
-	"github.com/apernet/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/protocol"
 )
 
 // interval is an interval from one PacketNumber to the other

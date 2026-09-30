@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apernet/quic-go"
+	"github.com/poise52/quic-go"
 
 	"github.com/stretchr/testify/require"
 )

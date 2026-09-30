@@ -6,7 +6,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/apernet/quic-go"
+	"github.com/poise52/quic-go"
 )
 
 const streamDatagramQueueLen = 32

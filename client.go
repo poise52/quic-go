@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net"
 
-	"github.com/apernet/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/protocol"
 )
 
 // make it possible to mock connection ID for initial generation in the tests

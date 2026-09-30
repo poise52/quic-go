@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apernet/quic-go"
-	quicproxy "github.com/apernet/quic-go/integrationtests/tools/proxy"
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/qlog"
-	"github.com/apernet/quic-go/qlogwriter"
-	"github.com/apernet/quic-go/quicvarint"
+	"github.com/poise52/quic-go"
+	quicproxy "github.com/poise52/quic-go/integrationtests/tools/proxy"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/qlog"
+	"github.com/poise52/quic-go/qlogwriter"
+	"github.com/poise52/quic-go/quicvarint"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

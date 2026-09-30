@@ -5,9 +5,9 @@ import (
 	"net/netip"
 	"slices"
 
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/wire"
-	"github.com/apernet/quic-go/qlog"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/wire"
+	"github.com/poise52/quic-go/qlog"
 )
 
 // ConvertFrame converts a wire.Frame into a logging.Frame.

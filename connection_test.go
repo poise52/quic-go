@@ -15,18 +15,18 @@ import (
 	"testing/synctest"
 	"time"
 
-	"github.com/apernet/quic-go/internal/ackhandler"
-	"github.com/apernet/quic-go/internal/handshake"
-	"github.com/apernet/quic-go/internal/mocks"
-	mockackhandler "github.com/apernet/quic-go/internal/mocks/ackhandler"
-	"github.com/apernet/quic-go/internal/monotime"
-	"github.com/apernet/quic-go/internal/protocol"
-	"github.com/apernet/quic-go/internal/qerr"
-	"github.com/apernet/quic-go/internal/utils"
-	"github.com/apernet/quic-go/internal/wire"
-	"github.com/apernet/quic-go/qlog"
-	"github.com/apernet/quic-go/qlogwriter"
-	"github.com/apernet/quic-go/testutils/events"
+	"github.com/poise52/quic-go/internal/ackhandler"
+	"github.com/poise52/quic-go/internal/handshake"
+	"github.com/poise52/quic-go/internal/mocks"
+	mockackhandler "github.com/poise52/quic-go/internal/mocks/ackhandler"
+	"github.com/poise52/quic-go/internal/monotime"
+	"github.com/poise52/quic-go/internal/protocol"
+	"github.com/poise52/quic-go/internal/qerr"
+	"github.com/poise52/quic-go/internal/utils"
+	"github.com/poise52/quic-go/internal/wire"
+	"github.com/poise52/quic-go/qlog"
+	"github.com/poise52/quic-go/qlogwriter"
+	"github.com/poise52/quic-go/testutils/events"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -1938,7 +1938,7 @@ func TestConnectionPacketPacing(t *testing.T) {
 }
 
 // When the send queue blocks, we need to reset the pacing timer, otherwise the run loop might busy-loop.
-// See https://github.com/apernet/quic-go/pull/4943 for more details.
+// See https://github.com/poise52/quic-go/pull/4943 for more details.
 func TestConnectionPacingAndSendQueue(t *testing.T) {
 	synctest.Test(t, func(t *testing.T) {
 		mockCtrl := gomock.NewController(t)

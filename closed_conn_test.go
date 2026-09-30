@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/apernet/quic-go/internal/utils"
+	"github.com/poise52/quic-go/internal/utils"
 
 	"github.com/stretchr/testify/require"
 )

@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apernet/quic-go"
-	"github.com/apernet/quic-go/http3"
-	quicproxy "github.com/apernet/quic-go/integrationtests/tools/proxy"
+	"github.com/poise52/quic-go"
+	"github.com/poise52/quic-go/http3"
+	quicproxy "github.com/poise52/quic-go/integrationtests/tools/proxy"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

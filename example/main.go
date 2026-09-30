@@ -15,10 +15,10 @@ import (
 
 	_ "net/http/pprof"
 
-	"github.com/apernet/quic-go"
-	"github.com/apernet/quic-go/http3"
-	"github.com/apernet/quic-go/http3/qlog"
-	"github.com/apernet/quic-go/internal/testdata"
+	"github.com/poise52/quic-go"
+	"github.com/poise52/quic-go/http3"
+	"github.com/poise52/quic-go/http3/qlog"
+	"github.com/poise52/quic-go/internal/testdata"
 )
 
 type binds []string
